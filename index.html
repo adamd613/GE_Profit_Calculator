@@ -87,14 +87,6 @@
                             <select id="presetSelect" class="preset-select">
                                 <option value="">Select a preset...</option>
                             </select>
-                            <button class="preset-btn preset-load-btn" id="loadPresetBtn" disabled title="Load preset">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                Load
-                            </button>
                             <button class="preset-btn preset-delete-btn" id="deletePresetBtn" disabled title="Delete preset">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -115,6 +107,36 @@
                                 Save
                             </button>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profit Summary -->
+            <section class="profit-summary" id="profitSummary">
+                <div class="profit-grid">
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total Buy Cost</div>
+                        <div class="profit-card-value cost" id="summaryBuyCost">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total Sell Revenue</div>
+                        <div class="profit-card-value revenue" id="summarySellRevenue">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total GE Tax</div>
+                        <div class="profit-card-value tax" id="summaryTax">0 gp</div>
+                    </div>
+                    <div class="profit-card highlight">
+                        <div class="profit-card-label">Net Profit</div>
+                        <div class="profit-card-value profit" id="summaryProfit">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Profit Margin</div>
+                        <div class="profit-card-value margin" id="summaryMargin">0%</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">ROI</div>
+                        <div class="profit-card-value roi" id="summaryROI">0%</div>
                     </div>
                 </div>
             </section>
@@ -265,36 +287,6 @@
                 <div class="section-total">
                     <span>Total Sell Revenue (after tax):</span>
                     <span class="total-value" id="totalSellRevenue">0 gp</span>
-                </div>
-            </section>
-
-            <!-- Profit Summary -->
-            <section class="profit-summary" id="profitSummary">
-                <div class="profit-grid">
-                    <div class="profit-card">
-                        <div class="profit-card-label">Total Buy Cost</div>
-                        <div class="profit-card-value cost" id="summaryBuyCost">0 gp</div>
-                    </div>
-                    <div class="profit-card">
-                        <div class="profit-card-label">Total Sell Revenue</div>
-                        <div class="profit-card-value revenue" id="summarySellRevenue">0 gp</div>
-                    </div>
-                    <div class="profit-card">
-                        <div class="profit-card-label">Total GE Tax</div>
-                        <div class="profit-card-value tax" id="summaryTax">0 gp</div>
-                    </div>
-                    <div class="profit-card highlight">
-                        <div class="profit-card-label">Net Profit</div>
-                        <div class="profit-card-value profit" id="summaryProfit">0 gp</div>
-                    </div>
-                    <div class="profit-card">
-                        <div class="profit-card-label">Profit Margin</div>
-                        <div class="profit-card-value margin" id="summaryMargin">0%</div>
-                    </div>
-                    <div class="profit-card">
-                        <div class="profit-card-label">ROI</div>
-                        <div class="profit-card-value roi" id="summaryROI">0%</div>
-                    </div>
                 </div>
             </section>
 

@@ -812,7 +812,6 @@ function renderPresetsDropdown() {
 function updatePresetButtonStates() {
     const select = document.getElementById('presetSelect');
     const hasSelection = !!select.value;
-    document.getElementById('loadPresetBtn').disabled = !hasSelection;
     document.getElementById('deletePresetBtn').disabled = !hasSelection;
 }
 
@@ -831,11 +830,24 @@ function setupPresets() {
     updatePresetButtonStates();
 
     const select = document.getElementById('presetSelect');
-    select.addEventListener('change', updatePresetButtonStates);
+    select.addEventListener('change', () => {
+        updatePresetButtonStates();
+        if (select.value) {
+            loadPreset(select.value);
+            const option = select.options[select.selectedIndex];
+            showToast(`Loaded "${option.text.split(' (')[0]}"`);
+        }
+    });
 
     document.getElementById('savePresetBtn').addEventListener('click', () => {
         const input = document.getElementById('presetNameInput');
-        const name = input.value.trim();
+        let name = input.value.trim();
+        
+        if (select.value) {
+            const option = select.options[select.selectedIndex];
+            name = option.text.split(' (')[0];
+        }
+
         if (!name) {
             input.focus();
             input.classList.add('shake');
@@ -851,14 +863,6 @@ function setupPresets() {
         savePreset(name);
         showToast(existing ? `Preset "${name}" updated!` : `Preset "${name}" saved!`);
         input.value = '';
-    });
-
-    document.getElementById('loadPresetBtn').addEventListener('click', () => {
-        if (select.value) {
-            loadPreset(select.value);
-            const option = select.options[select.selectedIndex];
-            showToast(`Loaded "${option.text.split(' (')[0]}"`);
-        }
     });
 
     document.getElementById('deletePresetBtn').addEventListener('click', () => {
