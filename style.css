@@ -534,6 +534,18 @@ body {
     white-space: nowrap;
 }
 
+.items-table thead th.col-price,
+.items-table thead th.col-total,
+.items-table thead th.col-tax,
+.items-table thead th.col-stats,
+.items-table thead th.col-multiplier {
+    text-align: right;
+}
+
+.items-table thead th.col-quantity {
+    text-align: center;
+}
+
 .items-table tbody tr {
     transition: background var(--transition-fast);
     border-bottom: 1px solid var(--border-subtle);
