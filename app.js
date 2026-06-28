@@ -249,21 +249,6 @@ function updateCustomExpenseQty(expenseId, qty) {
     }
 }
 
-function multiplyQuantities(type, multiplier) {
-    const multi = parseInt(multiplier);
-    if (isNaN(multi) || multi <= 0) return;
-
-    if (type === 'buy') {
-        buyItems.forEach(item => item.qty *= multi);
-        customExpenses.forEach(e => e.qty *= multi);
-    } else {
-        sellItems.forEach(item => item.qty *= multi);
-    }
-
-    renderItems(type);
-    updateSummary();
-}
-
 // ============================================
 // RENDERING
 // ============================================
@@ -296,7 +281,9 @@ function renderItems(type) {
         const instantSell = price.low || 0;  // "instant sell" = low price (what sellers get)
 
         if (type === 'buy') {
-            const totalCost = instantBuy * entry.qty;
+            const multiplier = Math.max(1, parseInt(document.getElementById('buyMultiplierInput').value) || 1);
+            const effectiveQty = entry.qty * multiplier;
+            const totalCost = instantBuy * effectiveQty;
             return `
                 <tr>
                     <td class="item-icon-cell" onclick="showItemDetail(${item.id})">
@@ -311,6 +298,7 @@ function renderItems(type) {
                             onchange="updateQuantity('buy', ${item.id}, this.value)"
                             oninput="updateQuantity('buy', ${item.id}, this.value)">
                     </td>
+                    <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
                     <td class="stats-cell">${formatGp(item.highalch)}</td>
                     <td class="stats-cell">
@@ -326,10 +314,12 @@ function renderItems(type) {
             `;
         } else {
             // Sell items - use instant sell price (low) as revenue since we're selling
+            const multiplier = Math.max(1, parseInt(document.getElementById('sellMultiplierInput').value) || 1);
+            const effectiveQty = entry.qty * multiplier;
             const sellPricePerItem = instantSell;
-            const totalRevenue = sellPricePerItem * entry.qty;
+            const totalRevenue = sellPricePerItem * effectiveQty;
             const taxPerItem = calculateGETax(sellPricePerItem);
-            const totalTax = taxPerItem * entry.qty;
+            const totalTax = taxPerItem * effectiveQty;
             const afterTax = totalRevenue - totalTax;
 
             return `
@@ -346,6 +336,7 @@ function renderItems(type) {
                             onchange="updateQuantity('sell', ${item.id}, this.value)"
                             oninput="updateQuantity('sell', ${item.id}, this.value)">
                     </td>
+                    <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-cell">${formatGp(totalRevenue)}</td>
                     <td class="tax-cell">-${formatGp(totalTax)}</td>
                     <td class="total-cell">${formatGp(afterTax)}</td>
@@ -365,8 +356,10 @@ function renderItems(type) {
 
     // Append custom expense rows for buy section
     if (type === 'buy' && customExpenses.length > 0) {
+        const multiplier = Math.max(1, parseInt(document.getElementById('buyMultiplierInput').value) || 1);
         tbody.innerHTML += customExpenses.map(expense => {
-            const totalCost = expense.cost * expense.qty;
+            const effectiveQty = expense.qty * multiplier;
+            const totalCost = expense.cost * effectiveQty;
             return `
                 <tr class="custom-expense-row">
                     <td class="item-icon-cell">
@@ -386,6 +379,7 @@ function renderItems(type) {
                             onchange="updateCustomExpenseQty('${expense.id}', this.value)"
                             oninput="updateCustomExpenseQty('${expense.id}', this.value)">
                     </td>
+                    <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
                     <td class="stats-cell">—</td>
                     <td class="stats-cell">—</td>
@@ -406,20 +400,22 @@ function updateSectionTotal(type) {
     const list = type === 'buy' ? buyItems : sellItems;
 
     if (type === 'buy') {
+        const multiplier = Math.max(1, parseInt(document.getElementById('buyMultiplierInput').value) || 1);
         let total = 0;
         list.forEach(entry => {
             const price = getItemPrice(entry.id);
-            total += (price.high || 0) * entry.qty;
+            total += (price.high || 0) * entry.qty * multiplier;
         });
-        customExpenses.forEach(e => { total += e.cost * e.qty; });
+        customExpenses.forEach(e => { total += e.cost * e.qty * multiplier; });
         document.getElementById('totalBuyCost').textContent = formatGp(total);
     } else {
+        const multiplier = Math.max(1, parseInt(document.getElementById('sellMultiplierInput').value) || 1);
         let total = 0;
         list.forEach(entry => {
             const price = getItemPrice(entry.id);
             const sellPrice = price.low || 0;
             const tax = calculateGETax(sellPrice);
-            total += (sellPrice - tax) * entry.qty;
+            total += (sellPrice - tax) * entry.qty * multiplier;
         });
         document.getElementById('totalSellRevenue').textContent = formatGp(total);
     }
@@ -430,18 +426,21 @@ function updateSummary() {
     let totalSellRevenue = 0;
     let totalTax = 0;
 
+    const buyMultiplier = Math.max(1, parseInt(document.getElementById('buyMultiplierInput').value) || 1);
+    const sellMultiplier = Math.max(1, parseInt(document.getElementById('sellMultiplierInput').value) || 1);
+
     buyItems.forEach(entry => {
         const price = getItemPrice(entry.id);
-        totalBuyCost += (price.high || 0) * entry.qty;
+        totalBuyCost += (price.high || 0) * entry.qty * buyMultiplier;
     });
-    customExpenses.forEach(e => { totalBuyCost += e.cost * e.qty; });
+    customExpenses.forEach(e => { totalBuyCost += e.cost * e.qty * buyMultiplier; });
 
     sellItems.forEach(entry => {
         const price = getItemPrice(entry.id);
         const sellPrice = price.low || 0;
-        const revenue = sellPrice * entry.qty;
+        const revenue = sellPrice * entry.qty * sellMultiplier;
         const taxPerItem = calculateGETax(sellPrice);
-        const tax = taxPerItem * entry.qty;
+        const tax = taxPerItem * entry.qty * sellMultiplier;
         totalSellRevenue += revenue;
         totalTax += tax;
     });
@@ -937,18 +936,14 @@ async function init() {
         setupSearch('sellSearchInput', 'sellSearchDropdown', 'sell');
 
         // Setup multipliers
-        document.getElementById('buyMultiplierBtn').addEventListener('click', () => {
-            const input = document.getElementById('buyMultiplierInput');
-            multiplyQuantities('buy', input.value);
-            input.value = 2; // Reset to a reasonable default after use
-            showToast('Buy quantities multiplied');
+        document.getElementById('buyMultiplierInput').addEventListener('input', () => {
+            renderItems('buy');
+            updateSummary();
         });
 
-        document.getElementById('sellMultiplierBtn').addEventListener('click', () => {
-            const input = document.getElementById('sellMultiplierInput');
-            multiplyQuantities('sell', input.value);
-            input.value = 2;
-            showToast('Sell quantities multiplied');
+        document.getElementById('sellMultiplierInput').addEventListener('input', () => {
+            renderItems('sell');
+            updateSummary();
         });
 
         // Setup presets

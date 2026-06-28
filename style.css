@@ -392,14 +392,6 @@ body {
     box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.1);
 }
 
-.multiplier-btn {
-    border-color: var(--border-strong);
-}
-
-.multiplier-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
 /* Search */
 .search-container {
     position: relative;
@@ -568,7 +560,7 @@ body {
     width: 60px;
 }
 
-.col-price, .col-total, .col-tax, .col-stats {
+.col-price, .col-total, .col-tax, .col-stats, .col-multiplier {
     width: 100px;
     text-align: right;
 }
@@ -612,10 +604,14 @@ body {
     color: var(--text-muted);
 }
 
-.price-cell {
+.price-cell, .multiplier-cell {
     font-family: var(--font-mono);
     font-weight: 500;
     text-align: right;
+}
+
+.multiplier-cell {
+    color: var(--text-secondary);
 }
 
 .price-high {
