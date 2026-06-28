@@ -573,6 +573,7 @@ body {
 
 .col-quantity {
     width: 90px;
+    text-align: center;
 }
 
 .col-action {
@@ -581,6 +582,7 @@ body {
 
 .item-icon-cell {
     cursor: pointer;
+    padding-right: 4px !important;
 }
 
 .item-icon-cell img {
@@ -598,6 +600,7 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     cursor: pointer;
+    padding-left: 4px !important;
 }
 
 .item-name-cell:hover {
