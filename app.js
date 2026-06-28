@@ -742,6 +742,8 @@ function savePreset(name) {
         buyItems: buyItems.map(i => ({ id: i.id, qty: i.qty })),
         sellItems: sellItems.map(i => ({ id: i.id, qty: i.qty })),
         customExpenses: customExpenses.map(e => ({ id: e.id, name: e.name, cost: e.cost, qty: e.qty })),
+        buyMultiplier: parseInt(document.getElementById('buyMultiplierInput').value) || 1,
+        sellMultiplier: parseInt(document.getElementById('sellMultiplierInput').value) || 1,
         savedAt: Date.now()
     };
 
@@ -772,6 +774,9 @@ function loadPreset(presetId) {
     if (preset.customExpenses) {
         preset.customExpenses.forEach(e => customExpenses.push({ id: e.id, name: e.name, cost: e.cost, qty: e.qty }));
     }
+
+    document.getElementById('buyMultiplierInput').value = preset.buyMultiplier || 1;
+    document.getElementById('sellMultiplierInput').value = preset.sellMultiplier || 1;
 
     renderItems('buy');
     renderItems('sell');
