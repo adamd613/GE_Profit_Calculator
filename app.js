@@ -843,7 +843,7 @@ function setupPresets() {
         const input = document.getElementById('presetNameInput');
         let name = input.value.trim();
         
-        if (select.value) {
+        if (!name && select.value) {
             const option = select.options[select.selectedIndex];
             name = option.text.split(' (')[0];
         }
