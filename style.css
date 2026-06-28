@@ -370,7 +370,13 @@ body {
 .multiplier-group {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+}
+
+.multiplier-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
 .multiplier-input {
