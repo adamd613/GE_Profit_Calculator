@@ -286,6 +286,9 @@ function renderItems(type) {
             const totalCost = instantBuy * effectiveQty;
             return `
                 <tr>
+                    <td>
+                        <button class="remove-btn" onclick="removeItem('buy', ${item.id})" title="Remove item">×</button>
+                    </td>
                     <td class="item-icon-cell" onclick="showItemDetail(${item.id})">
                         <img src="${getItemIconUrl(item.icon)}" alt="${item.name}" onerror="this.style.display='none'">
                     </td>
@@ -308,9 +311,6 @@ function renderItems(type) {
                         </span>
                     </td>
                     <td class="stats-cell">${item.limit ? formatNumber(item.limit) : '—'}</td>
-                    <td>
-                        <button class="remove-btn" onclick="removeItem('buy', ${item.id})" title="Remove item">×</button>
-                    </td>
                 </tr>
             `;
         } else {
@@ -325,6 +325,9 @@ function renderItems(type) {
 
             return `
                 <tr>
+                    <td>
+                        <button class="remove-btn" onclick="removeItem('sell', ${item.id})" title="Remove item">×</button>
+                    </td>
                     <td class="item-icon-cell" onclick="showItemDetail(${item.id})">
                         <img src="${getItemIconUrl(item.icon)}" alt="${item.name}" onerror="this.style.display='none'">
                     </td>
@@ -348,9 +351,6 @@ function renderItems(type) {
                             ${item.members ? 'P2P' : 'F2P'}
                         </span>
                     </td>
-                    <td>
-                        <button class="remove-btn" onclick="removeItem('sell', ${item.id})" title="Remove item">×</button>
-                    </td>
                 </tr>
             `;
         }
@@ -364,6 +364,9 @@ function renderItems(type) {
             const totalCost = expense.cost * effectiveQty;
             return `
                 <tr class="custom-expense-row">
+                    <td>
+                        <button class="remove-btn" onclick="removeCustomExpense('${expense.id}')" title="Remove expense">×</button>
+                    </td>
                     <td class="item-icon-cell">
                         <div class="custom-expense-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -387,9 +390,6 @@ function renderItems(type) {
                     <td class="stats-cell">—</td>
                     <td class="stats-cell">—</td>
                     <td class="stats-cell">—</td>
-                    <td>
-                        <button class="remove-btn" onclick="removeCustomExpense('${expense.id}')" title="Remove expense">×</button>
-                    </td>
                 </tr>
             `;
         }).join('');
