@@ -249,6 +249,21 @@ function updateCustomExpenseQty(expenseId, qty) {
     }
 }
 
+function multiplyQuantities(type, multiplier) {
+    const multi = parseInt(multiplier);
+    if (isNaN(multi) || multi <= 0) return;
+
+    if (type === 'buy') {
+        buyItems.forEach(item => item.qty *= multi);
+        customExpenses.forEach(e => e.qty *= multi);
+    } else {
+        sellItems.forEach(item => item.qty *= multi);
+    }
+
+    renderItems(type);
+    updateSummary();
+}
+
 // ============================================
 // RENDERING
 // ============================================
@@ -920,6 +935,21 @@ async function init() {
         // Setup search
         setupSearch('buySearchInput', 'buySearchDropdown', 'buy');
         setupSearch('sellSearchInput', 'sellSearchDropdown', 'sell');
+
+        // Setup multipliers
+        document.getElementById('buyMultiplierBtn').addEventListener('click', () => {
+            const input = document.getElementById('buyMultiplierInput');
+            multiplyQuantities('buy', input.value);
+            input.value = 2; // Reset to a reasonable default after use
+            showToast('Buy quantities multiplied');
+        });
+
+        document.getElementById('sellMultiplierBtn').addEventListener('click', () => {
+            const input = document.getElementById('sellMultiplierInput');
+            multiplyQuantities('sell', input.value);
+            input.value = 2;
+            showToast('Sell quantities multiplied');
+        });
 
         // Setup presets
         setupPresets();

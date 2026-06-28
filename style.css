@@ -361,6 +361,45 @@ body {
     border: 1px solid var(--border-subtle);
 }
 
+.section-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.multiplier-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.multiplier-input {
+    width: 60px;
+    padding: 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    outline: none;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.multiplier-input:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.1);
+}
+
+.multiplier-btn {
+    border-color: var(--border-strong);
+}
+
+.multiplier-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
 /* Search */
 .search-container {
     position: relative;
