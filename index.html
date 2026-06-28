@@ -68,6 +68,57 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Presets Toolbar -->
+            <section class="presets-toolbar">
+                <div class="presets-header">
+                    <div class="presets-label">
+                        <div class="section-icon preset-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                        </div>
+                        <h2>Presets</h2>
+                        <span class="item-count" id="presetCount">0 saved</span>
+                    </div>
+                    <div class="presets-controls">
+                        <div class="preset-load-group">
+                            <select id="presetSelect" class="preset-select">
+                                <option value="">Select a preset...</option>
+                            </select>
+                            <button class="preset-btn preset-load-btn" id="loadPresetBtn" disabled title="Load preset">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Load
+                            </button>
+                            <button class="preset-btn preset-delete-btn" id="deletePresetBtn" disabled title="Delete preset">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                        <div class="preset-divider"></div>
+                        <div class="preset-save-group">
+                            <input type="text" id="presetNameInput" class="preset-name-input" placeholder="Preset name..." maxlength="40">
+                            <button class="preset-btn preset-save-btn" id="savePresetBtn" title="Save current items as preset">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Buy Items Section -->
             <section class="items-section buy-section">
                 <div class="section-header">
@@ -241,6 +292,9 @@
             <p>Data from <a href="https://prices.runescape.wiki" target="_blank" rel="noopener">prices.runescape.wiki</a> &bull; Prices update in real-time &bull; GE Tax: 2% on sold items (>50gp, capped at 5M)</p>
         </footer>
     </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <script src="app.js"></script>
 </body>

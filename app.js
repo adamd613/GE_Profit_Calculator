@@ -627,6 +627,161 @@ function drawPriceChart(data) {
 }
 
 // ============================================
+// PRESETS (localStorage)
+// ============================================
+
+const PRESETS_STORAGE_KEY = 'ge_calc_presets';
+
+function getPresets() {
+    try {
+        const raw = localStorage.getItem(PRESETS_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch {
+        return [];
+    }
+}
+
+function savePresetsToStorage(presets) {
+    localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(presets));
+}
+
+function savePreset(name) {
+    if (!name || !name.trim()) return false;
+    const presets = getPresets();
+    const trimmedName = name.trim();
+
+    // Check if preset with same name exists — overwrite it
+    const existingIdx = presets.findIndex(p => p.name.toLowerCase() === trimmedName.toLowerCase());
+
+    const preset = {
+        id: existingIdx !== -1 ? presets[existingIdx].id : Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name: trimmedName,
+        buyItems: buyItems.map(i => ({ id: i.id, qty: i.qty })),
+        sellItems: sellItems.map(i => ({ id: i.id, qty: i.qty })),
+        savedAt: Date.now()
+    };
+
+    if (existingIdx !== -1) {
+        presets[existingIdx] = preset;
+    } else {
+        presets.push(preset);
+    }
+
+    savePresetsToStorage(presets);
+    renderPresetsDropdown();
+    document.getElementById('presetSelect').value = preset.id;
+    updatePresetButtonStates();
+    return true;
+}
+
+function loadPreset(presetId) {
+    const presets = getPresets();
+    const preset = presets.find(p => p.id === presetId);
+    if (!preset) return;
+
+    // Clear and replace current items
+    buyItems.length = 0;
+    sellItems.length = 0;
+    preset.buyItems.forEach(i => buyItems.push({ id: i.id, qty: i.qty }));
+    preset.sellItems.forEach(i => sellItems.push({ id: i.id, qty: i.qty }));
+
+    renderItems('buy');
+    renderItems('sell');
+    updateSummary();
+}
+
+function deletePreset(presetId) {
+    let presets = getPresets();
+    presets = presets.filter(p => p.id !== presetId);
+    savePresetsToStorage(presets);
+    renderPresetsDropdown();
+    updatePresetButtonStates();
+}
+
+function renderPresetsDropdown() {
+    const select = document.getElementById('presetSelect');
+    const presets = getPresets();
+    const countEl = document.getElementById('presetCount');
+
+    countEl.textContent = `${presets.length} saved`;
+
+    select.innerHTML = '<option value="">Select a preset...</option>' +
+        presets.map(p => {
+            const buyCount = p.buyItems.length;
+            const sellCount = p.sellItems.length;
+            return `<option value="${p.id}">${p.name} (${buyCount}B / ${sellCount}S)</option>`;
+        }).join('');
+}
+
+function updatePresetButtonStates() {
+    const select = document.getElementById('presetSelect');
+    const hasSelection = !!select.value;
+    document.getElementById('loadPresetBtn').disabled = !hasSelection;
+    document.getElementById('deletePresetBtn').disabled = !hasSelection;
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast toast-${type} visible`;
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+        toast.classList.remove('visible');
+    }, 2500);
+}
+
+function setupPresets() {
+    renderPresetsDropdown();
+    updatePresetButtonStates();
+
+    const select = document.getElementById('presetSelect');
+    select.addEventListener('change', updatePresetButtonStates);
+
+    document.getElementById('savePresetBtn').addEventListener('click', () => {
+        const input = document.getElementById('presetNameInput');
+        const name = input.value.trim();
+        if (!name) {
+            input.focus();
+            input.classList.add('shake');
+            setTimeout(() => input.classList.remove('shake'), 500);
+            return;
+        }
+        if (buyItems.length === 0 && sellItems.length === 0) {
+            showToast('Add items before saving', 'warning');
+            return;
+        }
+        const presets = getPresets();
+        const existing = presets.find(p => p.name.toLowerCase() === name.toLowerCase());
+        savePreset(name);
+        showToast(existing ? `Preset "${name}" updated!` : `Preset "${name}" saved!`);
+        input.value = '';
+    });
+
+    document.getElementById('loadPresetBtn').addEventListener('click', () => {
+        if (select.value) {
+            loadPreset(select.value);
+            const option = select.options[select.selectedIndex];
+            showToast(`Loaded "${option.text.split(' (')[0]}"`);
+        }
+    });
+
+    document.getElementById('deletePresetBtn').addEventListener('click', () => {
+        if (select.value) {
+            const option = select.options[select.selectedIndex];
+            const name = option.text.split(' (')[0];
+            deletePreset(select.value);
+            showToast(`Deleted "${name}"`, 'warning');
+        }
+    });
+
+    document.getElementById('presetNameInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('savePresetBtn').click();
+        }
+    });
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 
@@ -649,6 +804,9 @@ async function init() {
         // Setup search
         setupSearch('buySearchInput', 'buySearchDropdown', 'buy');
         setupSearch('sellSearchInput', 'sellSearchDropdown', 'sell');
+
+        // Setup presets
+        setupPresets();
 
         // Add default items
         DEFAULT_BUY_ITEMS.forEach(item => addItem('buy', item.id, item.qty || 1));
