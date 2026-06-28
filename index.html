@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OSRS Grand Exchange Profit Calculator - Calculate profit margins for buying and selling items on the Grand Exchange in Old School RuneScape.">
+    <title>GE Profit Calculator | OSRS Grand Exchange</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+                            <path d="M8 22L16 10L24 22H8Z" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                            <circle cx="16" cy="18" r="3" fill="url(#logoGrad2)"/>
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                                    <stop stop-color="#D4A843"/>
+                                    <stop offset="1" stop-color="#B8860B"/>
+                                </linearGradient>
+                                <linearGradient id="logoGrad2" x1="13" y1="15" x2="19" y2="21">
+                                    <stop stop-color="#D4A843"/>
+                                    <stop offset="1" stop-color="#8B6914"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>GE Profit Calculator</h1>
+                        <span class="subtitle">Old School RuneScape</span>
+                    </div>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-badge" id="itemCountBadge">
+                        <span class="stat-label">Items Loaded</span>
+                        <span class="stat-value" id="itemsLoadedCount">...</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">GE Tax</span>
+                        <span class="stat-value">2%</span>
+                    </div>
+                    <button class="refresh-btn" id="refreshBtn" title="Refresh Prices">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loader">
+                <div class="loader-ring"></div>
+                <div class="loader-text">Loading GE Data...</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Buy Items Section -->
+            <section class="items-section buy-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon buy-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                        </div>
+                        <h2>Buy Items</h2>
+                        <span class="item-count" id="buyItemCount">0 items</span>
+                    </div>
+                    <div class="section-actions">
+                        <div class="search-container">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="buySearchInput" class="search-input" placeholder="Search item name..." autocomplete="off">
+                            <div class="search-dropdown" id="buySearchDropdown"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="items-table-container">
+                    <table class="items-table" id="buyItemsTable">
+                        <thead>
+                            <tr>
+                                <th class="col-icon"></th>
+                                <th class="col-name">Item</th>
+                                <th class="col-id">ID</th>
+                                <th class="col-price">Instant Buy</th>
+                                <th class="col-price">Instant Sell</th>
+                                <th class="col-quantity">Qty</th>
+                                <th class="col-total">Total Cost</th>
+                                <th class="col-stats">High Alch</th>
+                                <th class="col-stats">Members</th>
+                                <th class="col-stats">Buy Limit</th>
+                                <th class="col-action"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="buyItemsBody"></tbody>
+                    </table>
+                    <div class="empty-state" id="buyEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <p>Search and add items to buy</p>
+                    </div>
+                </div>
+                <div class="section-total">
+                    <span>Total Buy Cost:</span>
+                    <span class="total-value" id="totalBuyCost">0 gp</span>
+                </div>
+            </section>
+
+            <!-- Sell Items Section -->
+            <section class="items-section sell-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon sell-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <h2>Sell Items</h2>
+                        <span class="item-count" id="sellItemCount">0 items</span>
+                    </div>
+                    <div class="section-actions">
+                        <div class="search-container">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="sellSearchInput" class="search-input" placeholder="Search item name..." autocomplete="off">
+                            <div class="search-dropdown" id="sellSearchDropdown"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="items-table-container">
+                    <table class="items-table" id="sellItemsTable">
+                        <thead>
+                            <tr>
+                                <th class="col-icon"></th>
+                                <th class="col-name">Item</th>
+                                <th class="col-id">ID</th>
+                                <th class="col-price">Instant Buy</th>
+                                <th class="col-price">Instant Sell</th>
+                                <th class="col-quantity">Qty</th>
+                                <th class="col-total">Revenue</th>
+                                <th class="col-tax">Tax (2%)</th>
+                                <th class="col-total">After Tax</th>
+                                <th class="col-stats">High Alch</th>
+                                <th class="col-stats">Members</th>
+                                <th class="col-action"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="sellItemsBody"></tbody>
+                    </table>
+                    <div class="empty-state" id="sellEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <p>Search and add items to sell</p>
+                    </div>
+                </div>
+                <div class="section-total">
+                    <span>Total Sell Revenue (after tax):</span>
+                    <span class="total-value" id="totalSellRevenue">0 gp</span>
+                </div>
+            </section>
+
+            <!-- Profit Summary -->
+            <section class="profit-summary" id="profitSummary">
+                <div class="profit-grid">
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total Buy Cost</div>
+                        <div class="profit-card-value cost" id="summaryBuyCost">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total Sell Revenue</div>
+                        <div class="profit-card-value revenue" id="summarySellRevenue">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Total GE Tax</div>
+                        <div class="profit-card-value tax" id="summaryTax">0 gp</div>
+                    </div>
+                    <div class="profit-card highlight">
+                        <div class="profit-card-label">Net Profit</div>
+                        <div class="profit-card-value profit" id="summaryProfit">0 gp</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">Profit Margin</div>
+                        <div class="profit-card-value margin" id="summaryMargin">0%</div>
+                    </div>
+                    <div class="profit-card">
+                        <div class="profit-card-label">ROI</div>
+                        <div class="profit-card-value roi" id="summaryROI">0%</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Item Detail Modal -->
+            <div class="modal-overlay" id="itemDetailModal">
+                <div class="modal-content">
+                    <button class="modal-close" id="modalClose">&times;</button>
+                    <div class="modal-header">
+                        <img id="modalItemIcon" class="modal-icon" src="" alt="">
+                        <div>
+                            <h3 id="modalItemName"></h3>
+                            <span class="modal-item-id" id="modalItemId"></span>
+                        </div>
+                    </div>
+                    <p class="modal-examine" id="modalExamine"></p>
+                    <div class="modal-stats-grid" id="modalStatsGrid"></div>
+                    <div class="modal-chart-container">
+                        <h4>Price History (Last 24h)</h4>
+                        <canvas id="priceChart" width="600" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Data from <a href="https://prices.runescape.wiki" target="_blank" rel="noopener">prices.runescape.wiki</a> &bull; Prices update in real-time &bull; GE Tax: 2% on sold items (>50gp, capped at 5M)</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
