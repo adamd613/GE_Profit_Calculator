@@ -299,6 +299,7 @@ function renderItems(type) {
                             oninput="updateQuantity('buy', ${item.id}, this.value)">
                     </td>
                     <td class="multiplier-cell">x${multiplier}</td>
+                    <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
                     <td class="stats-cell">${formatGp(item.highalch)}</td>
                     <td class="stats-cell">
@@ -337,6 +338,7 @@ function renderItems(type) {
                             oninput="updateQuantity('sell', ${item.id}, this.value)">
                     </td>
                     <td class="multiplier-cell">x${multiplier}</td>
+                    <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalRevenue)}</td>
                     <td class="tax-cell">-${formatGp(totalTax)}</td>
                     <td class="total-cell">${formatGp(afterTax)}</td>
@@ -380,6 +382,7 @@ function renderItems(type) {
                             oninput="updateCustomExpenseQty('${expense.id}', this.value)">
                     </td>
                     <td class="multiplier-cell">x${multiplier}</td>
+                    <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
                     <td class="stats-cell">—</td>
                     <td class="stats-cell">—</td>
