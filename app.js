@@ -289,6 +289,11 @@ function renderItems(type) {
                     <td>
                         <button class="remove-btn" onclick="removeItem('buy', ${item.id})" title="Remove item">×</button>
                     </td>
+                    <td>
+                        <input type="number" class="quantity-input" value="${entry.qty}" min="1"
+                            onchange="updateQuantity('buy', ${item.id}, this.value)"
+                            oninput="updateQuantity('buy', ${item.id}, this.value)">
+                    </td>
                     <td class="item-icon-cell" onclick="showItemDetail(${item.id})">
                         <img src="${getItemIconUrl(item.icon)}" alt="${item.name}" onerror="this.style.display='none'">
                     </td>
@@ -296,11 +301,6 @@ function renderItems(type) {
                     <td class="item-id-cell">#${item.id}</td>
                     <td class="price-cell price-high">${formatGp(instantBuy)}</td>
                     <td class="price-cell price-low">${formatGp(instantSell)}</td>
-                    <td>
-                        <input type="number" class="quantity-input" value="${entry.qty}" min="1"
-                            onchange="updateQuantity('buy', ${item.id}, this.value)"
-                            oninput="updateQuantity('buy', ${item.id}, this.value)">
-                    </td>
                     <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
@@ -328,6 +328,11 @@ function renderItems(type) {
                     <td>
                         <button class="remove-btn" onclick="removeItem('sell', ${item.id})" title="Remove item">×</button>
                     </td>
+                    <td>
+                        <input type="number" class="quantity-input" value="${entry.qty}" min="1"
+                            onchange="updateQuantity('sell', ${item.id}, this.value)"
+                            oninput="updateQuantity('sell', ${item.id}, this.value)">
+                    </td>
                     <td class="item-icon-cell" onclick="showItemDetail(${item.id})">
                         <img src="${getItemIconUrl(item.icon)}" alt="${item.name}" onerror="this.style.display='none'">
                     </td>
@@ -335,11 +340,6 @@ function renderItems(type) {
                     <td class="item-id-cell">#${item.id}</td>
                     <td class="price-cell price-high">${formatGp(instantBuy)}</td>
                     <td class="price-cell price-low">${formatGp(instantSell)}</td>
-                    <td>
-                        <input type="number" class="quantity-input" value="${entry.qty}" min="1"
-                            onchange="updateQuantity('sell', ${item.id}, this.value)"
-                            oninput="updateQuantity('sell', ${item.id}, this.value)">
-                    </td>
                     <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalRevenue)}</td>
@@ -367,6 +367,11 @@ function renderItems(type) {
                     <td>
                         <button class="remove-btn" onclick="removeCustomExpense('${expense.id}')" title="Remove expense">×</button>
                     </td>
+                    <td>
+                        <input type="number" class="quantity-input" value="${expense.qty}" min="1"
+                            onchange="updateCustomExpenseQty('${expense.id}', this.value)"
+                            oninput="updateCustomExpenseQty('${expense.id}', this.value)">
+                    </td>
                     <td class="item-icon-cell">
                         <div class="custom-expense-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -379,11 +384,6 @@ function renderItems(type) {
                     <td class="item-id-cell"><span class="custom-badge">Custom</span></td>
                     <td class="price-cell price-high">${formatGp(expense.cost)}</td>
                     <td class="price-cell">—</td>
-                    <td>
-                        <input type="number" class="quantity-input" value="${expense.qty}" min="1"
-                            onchange="updateCustomExpenseQty('${expense.id}', this.value)"
-                            oninput="updateCustomExpenseQty('${expense.id}', this.value)">
-                    </td>
                     <td class="multiplier-cell">x${multiplier}</td>
                     <td class="total-qty-cell">${formatNumber(effectiveQty)}</td>
                     <td class="total-cell">${formatGp(totalCost)}</td>
