@@ -15,11 +15,11 @@ const GE_TAX_CAP = 5_000_000; // Max tax per transaction
 const DEFAULT_BUY_ITEMS = [
     { name: 'Nature rune', id: 561 },
     { name: 'Astral rune', id: 9075, qty: 2 },
-    { name: 'Blue dragonhide', id: 1751 }
+    { name: 'Blue dragonhide', id: 1751, qty: 5 }
 ];
 
 const DEFAULT_SELL_ITEMS = [
-    { name: 'Blue dragon leather', id: 2505 }
+    { name: 'Blue dragon leather', id: 2505, qty: 5 }
 ];
 
 // ============================================
@@ -30,6 +30,7 @@ let itemMapping = [];       // Full item mapping from API
 let latestPrices = {};      // Latest prices keyed by item ID
 let buyItems = [];           // Array of { id, qty }
 let sellItems = [];          // Array of { id, qty }
+let customExpenses = [];     // Array of { id, name, cost, qty }
 
 // ============================================
 // API FUNCTIONS
@@ -219,6 +220,36 @@ function updateQuantity(type, itemId, qty) {
 }
 
 // ============================================
+// CUSTOM EXPENSES
+// ============================================
+
+function addCustomExpense(name, cost, qty = 1) {
+    if (!name || !name.trim() || !cost || cost <= 0) return;
+    customExpenses.push({
+        id: 'custom_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4),
+        name: name.trim(),
+        cost: Math.floor(parseInt(cost) || 0),
+        qty: Math.max(1, parseInt(qty) || 1)
+    });
+    renderItems('buy');
+    updateSummary();
+}
+
+function removeCustomExpense(expenseId) {
+    customExpenses = customExpenses.filter(e => e.id !== expenseId);
+    renderItems('buy');
+    updateSummary();
+}
+
+function updateCustomExpenseQty(expenseId, qty) {
+    const expense = customExpenses.find(e => e.id === expenseId);
+    if (expense) {
+        expense.qty = Math.max(1, parseInt(qty) || 1);
+        updateSummary();
+    }
+}
+
+// ============================================
 // RENDERING
 // ============================================
 
@@ -229,9 +260,10 @@ function renderItems(type) {
     const countEl = document.getElementById(type === 'buy' ? 'buyItemCount' : 'sellItemCount');
     const table = document.getElementById(type === 'buy' ? 'buyItemsTable' : 'sellItemsTable');
 
-    countEl.textContent = `${list.length} item${list.length !== 1 ? 's' : ''}`;
+    const totalCount = type === 'buy' ? list.length + customExpenses.length : list.length;
+    countEl.textContent = `${totalCount} item${totalCount !== 1 ? 's' : ''}`;
 
-    if (list.length === 0) {
+    if (totalCount === 0) {
         table.style.display = 'none';
         emptyState.classList.add('visible');
         return;
@@ -316,6 +348,41 @@ function renderItems(type) {
         }
     }).join('');
 
+    // Append custom expense rows for buy section
+    if (type === 'buy' && customExpenses.length > 0) {
+        tbody.innerHTML += customExpenses.map(expense => {
+            const totalCost = expense.cost * expense.qty;
+            return `
+                <tr class="custom-expense-row">
+                    <td class="item-icon-cell">
+                        <div class="custom-expense-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                        </div>
+                    </td>
+                    <td class="item-name-cell custom-name">${expense.name}</td>
+                    <td class="item-id-cell"><span class="custom-badge">Custom</span></td>
+                    <td class="price-cell price-high">${formatGp(expense.cost)}</td>
+                    <td class="price-cell">—</td>
+                    <td>
+                        <input type="number" class="quantity-input" value="${expense.qty}" min="1"
+                            onchange="updateCustomExpenseQty('${expense.id}', this.value)"
+                            oninput="updateCustomExpenseQty('${expense.id}', this.value)">
+                    </td>
+                    <td class="total-cell">${formatGp(totalCost)}</td>
+                    <td class="stats-cell">—</td>
+                    <td class="stats-cell">—</td>
+                    <td class="stats-cell">—</td>
+                    <td>
+                        <button class="remove-btn" onclick="removeCustomExpense('${expense.id}')" title="Remove expense">×</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
     // Update section total
     updateSectionTotal(type);
 }
@@ -329,6 +396,7 @@ function updateSectionTotal(type) {
             const price = getItemPrice(entry.id);
             total += (price.high || 0) * entry.qty;
         });
+        customExpenses.forEach(e => { total += e.cost * e.qty; });
         document.getElementById('totalBuyCost').textContent = formatGp(total);
     } else {
         let total = 0;
@@ -351,6 +419,7 @@ function updateSummary() {
         const price = getItemPrice(entry.id);
         totalBuyCost += (price.high || 0) * entry.qty;
     });
+    customExpenses.forEach(e => { totalBuyCost += e.cost * e.qty; });
 
     sellItems.forEach(entry => {
         const price = getItemPrice(entry.id);
@@ -658,6 +727,7 @@ function savePreset(name) {
         name: trimmedName,
         buyItems: buyItems.map(i => ({ id: i.id, qty: i.qty })),
         sellItems: sellItems.map(i => ({ id: i.id, qty: i.qty })),
+        customExpenses: customExpenses.map(e => ({ id: e.id, name: e.name, cost: e.cost, qty: e.qty })),
         savedAt: Date.now()
     };
 
@@ -682,8 +752,12 @@ function loadPreset(presetId) {
     // Clear and replace current items
     buyItems.length = 0;
     sellItems.length = 0;
+    customExpenses.length = 0;
     preset.buyItems.forEach(i => buyItems.push({ id: i.id, qty: i.qty }));
     preset.sellItems.forEach(i => sellItems.push({ id: i.id, qty: i.qty }));
+    if (preset.customExpenses) {
+        preset.customExpenses.forEach(e => customExpenses.push({ id: e.id, name: e.name, cost: e.cost, qty: e.qty }));
+    }
 
     renderItems('buy');
     renderItems('sell');
@@ -746,7 +820,7 @@ function setupPresets() {
             setTimeout(() => input.classList.remove('shake'), 500);
             return;
         }
-        if (buyItems.length === 0 && sellItems.length === 0) {
+        if (buyItems.length === 0 && sellItems.length === 0 && customExpenses.length === 0) {
             showToast('Add items before saving', 'warning');
             return;
         }
@@ -781,6 +855,48 @@ function setupPresets() {
     });
 }
 
+function setupExpenseForm() {
+    const nameInput = document.getElementById('expenseName');
+    const costInput = document.getElementById('expenseCost');
+    const addBtn = document.getElementById('addExpenseBtn');
+
+    const handleAdd = () => {
+        const name = nameInput.value.trim();
+        const cost = parseInt(costInput.value);
+
+        if (!name) {
+            nameInput.classList.add('shake');
+            setTimeout(() => nameInput.classList.remove('shake'), 500);
+            return;
+        }
+
+        if (isNaN(cost) || cost <= 0) {
+            costInput.classList.add('shake');
+            setTimeout(() => costInput.classList.remove('shake'), 500);
+            return;
+        }
+
+        addCustomExpense(name, cost, 1);
+        nameInput.value = '';
+        costInput.value = '';
+        nameInput.focus();
+    };
+
+    addBtn.addEventListener('click', handleAdd);
+
+    nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleAdd();
+        }
+    });
+
+    costInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleAdd();
+        }
+    });
+}
+
 // ============================================
 // INITIALIZATION
 // ============================================
@@ -811,6 +927,9 @@ async function init() {
         // Add default items
         DEFAULT_BUY_ITEMS.forEach(item => addItem('buy', item.id, item.qty || 1));
         DEFAULT_SELL_ITEMS.forEach(item => addItem('sell', item.id, item.qty || 1));
+
+        // Setup custom expense form
+        setupExpenseForm();
 
         // Setup modal
         document.getElementById('modalClose').addEventListener('click', closeModal);

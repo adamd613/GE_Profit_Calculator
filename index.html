@@ -172,6 +172,26 @@
                         <p>Search and add items to buy</p>
                     </div>
                 </div>
+                <div class="custom-expense-bar">
+                    <div class="expense-bar-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Other Expense
+                    </div>
+                    <div class="expense-bar-inputs">
+                        <input type="text" id="expenseName" class="expense-input expense-name-input" placeholder="Expense name..." maxlength="40">
+                        <input type="number" id="expenseCost" class="expense-input expense-cost-input" placeholder="Cost (gp)" min="1">
+                        <button class="preset-btn expense-add-btn" id="addExpenseBtn" title="Add custom expense">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                </div>
                 <div class="section-total">
                     <span>Total Buy Cost:</span>
                     <span class="total-value" id="totalBuyCost">0 gp</span>

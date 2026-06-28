@@ -705,6 +705,298 @@ body {
 }
 
 /* ============================================
+   CUSTOM EXPENSES
+   ============================================ */
+
+.custom-expense-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.05), transparent);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.expense-bar-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.expense-bar-label svg {
+    color: #10b981;
+}
+
+.expense-bar-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.expense-input {
+    padding: 8px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.expense-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.expense-name-input {
+    width: 200px;
+}
+
+.expense-cost-input {
+    width: 120px;
+    font-family: var(--font-mono);
+}
+
+.expense-add-btn {
+    border-color: var(--color-sell-border);
+    color: var(--color-sell);
+}
+
+.expense-add-btn:hover {
+    background: var(--color-sell-bg);
+}
+
+.custom-expense-row {
+    background: rgba(34, 197, 94, 0.02);
+}
+
+.custom-expense-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+}
+
+.custom-name {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.custom-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   PRESETS TOOLBAR
+   ============================================ */
+
+.presets-toolbar {
+    background: var(--bg-card);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.08);
+}
+
+.presets-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.04), transparent);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.presets-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.preset-icon {
+    background: rgba(139, 92, 246, 0.08);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.presets-label h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.presets-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preset-load-group,
+.preset-save-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preset-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border-default);
+    margin: 0 4px;
+}
+
+.preset-select {
+    padding: 8px 32px 8px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 200px;
+}
+
+.preset-select:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.preset-select option {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.preset-name-input {
+    padding: 8px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    outline: none;
+    transition: all var(--transition-fast);
+    width: 180px;
+}
+
+.preset-name-input::placeholder {
+    color: var(--text-muted);
+}
+
+.preset-name-input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.preset-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.preset-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.preset-btn:disabled:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-color: var(--border-default);
+}
+
+.preset-save-btn:hover {
+    background: rgba(139, 92, 246, 0.12);
+    color: #a78bfa;
+    border-color: rgba(139, 92, 246, 0.35);
+}
+
+.preset-load-btn:hover:not(:disabled) {
+    background: var(--color-buy-bg);
+    color: var(--color-buy);
+    border-color: var(--color-buy-border);
+}
+
+.preset-delete-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-loss);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 12px 24px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.toast.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-success {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), var(--bg-tertiary));
+}
+
+.toast-warning {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), var(--bg-tertiary));
+}
+
+/* ============================================
    PROFIT SUMMARY
    ============================================ */
 
@@ -987,6 +1279,22 @@ body {
     .modal-stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .presets-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .presets-controls {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .preset-select {
+        min-width: 160px;
+        flex: 1;
+    }
 }
 
 @media (max-width: 600px) {
@@ -1001,6 +1309,28 @@ body {
     .header-stats {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .presets-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .preset-load-group,
+    .preset-save-group {
+        width: 100%;
+    }
+
+    .preset-divider {
+        width: 100%;
+        height: 1px;
+        margin: 4px 0;
+    }
+
+    .preset-select,
+    .preset-name-input {
+        flex: 1;
+        min-width: 0;
     }
 }
 
@@ -1031,4 +1361,16 @@ body {
 
 .price-updated {
     animation: priceFlash 1s ease-out;
+}
+
+/* Shake animation for invalid input */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.4s ease-out;
+    border-color: var(--color-loss) !important;
 }
